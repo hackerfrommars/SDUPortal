@@ -103,17 +103,20 @@ public class MyService extends Service {
 
             @Override
             public void onResponse(JSONObject response) {
-//                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
                 SharedPreferences sharedPref = getSharedPreferences("sPref", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString("json", response.toString());
-                editor.commit();
-                Log.d("myLogs", "json saved");
-                try {
-                    checkGrades(response);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Log.d("myLogs", "JSON exeption");
+                if(sharedPref.contains("json")){
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString("json", response.toString());
+                    editor.commit();
+                    Log.d("myLogs", "json saved");
+                }
+                else{
+                    try {
+                        checkGrades(response);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.d("myLogs", "JSON exeption");
+                    }
                 }
             }
         }, new Response.ErrorListener() {

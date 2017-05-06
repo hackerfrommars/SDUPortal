@@ -38,12 +38,12 @@ public class FragmentA extends Fragment implements OnClickListener {
         enter = (Button) view.findViewById(R.id.enter);
         enter.setOnClickListener(this);
         b = new FragmentB();
-//        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-//        if(sharedPref.contains("p_user") && !sharedPref.getString("p_user", "").equals("") && sharedPref.contains("p_pass") && !sharedPref.getString("p_pass", "").equals("")){
-//            transaction = getFragmentManager().beginTransaction();
-//            transaction.replace(R.id.container, b);
-//            transaction.commit();
-//        }
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("sPref", Context.MODE_PRIVATE);
+        if(sharedPref.contains("p_user") && !sharedPref.getString("p_user", "").equals("") && sharedPref.contains("p_pass") && !sharedPref.getString("p_pass", "").equals("")){
+            transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.container, b);
+            transaction.commit();
+        }
 
 
         return view;
