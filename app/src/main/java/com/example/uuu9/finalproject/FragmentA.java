@@ -63,10 +63,10 @@ public class FragmentA extends Fragment implements OnClickListener {
         switch (v.getId()) {
             case R.id.enter:
                 transaction.replace(R.id.container, b);
-                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences sharedPref = getActivity().getSharedPreferences("sPref", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString("p_user", id.getText().toString() + "");
-                editor.putString("p_pass", pass.getText().toString() + "");
+                editor.putString("p_user", id.getText().toString());
+                editor.putString("p_pass", pass.getText().toString());
                 editor.commit();
 //                identificator = getID();
 //                password = getPass();

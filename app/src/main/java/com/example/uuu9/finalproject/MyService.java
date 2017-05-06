@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -55,7 +56,7 @@ public class MyService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(LOG_TAG, "onStartCommand");
         context = getApplicationContext();
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences sharedPref = getSharedPreferences("sPref", MODE_PRIVATE);
         p_user = sharedPref.getString("p_user", p_user);
         p_pass = sharedPref.getString("p_pass", p_pass);
         Log.d("myLogs", p_user + " : " + p_pass);
@@ -102,9 +103,11 @@ public class MyService extends Service {
 
             @Override
             public void onResponse(JSONObject response) {
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+//                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+                SharedPreferences sharedPref = getSharedPreferences("sPref", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("json", response.toString());
+                editor.commit();
                 Log.d("myLogs", "json saved");
                 try {
                     checkGrades(response);
@@ -126,7 +129,8 @@ public class MyService extends Service {
         requestQueue.add(jsObjRequest);
     }
     public void checkGrades(JSONObject newGr) throws JSONException {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences sharedPref = getSharedPreferences("sPref", MODE_PRIVATE);
         Log.d("myLogs", "saved Json in str form" + sharedPref.getString("json", ""));
         JSONObject oldGr = new JSONObject(sharedPref.getString("json", ""));
         Log.d("myLogs", " old from grade" + oldGr.toString());
