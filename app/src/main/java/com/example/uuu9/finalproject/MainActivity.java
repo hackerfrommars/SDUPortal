@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     String pass;
     FragmentA a;
     FragmentTransaction transaction;
-    public static String currJson = "";
 
 
 

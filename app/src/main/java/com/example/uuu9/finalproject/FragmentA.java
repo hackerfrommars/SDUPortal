@@ -2,6 +2,7 @@ package com.example.uuu9.finalproject;
 
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,19 +32,28 @@ public class FragmentA extends Fragment implements OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_a, container, false);
+
         id = (EditText) view.findViewById(R.id.idiwka);
         pass = (EditText) view.findViewById(R.id.pass);
         enter = (Button) view.findViewById(R.id.enter);
         enter.setOnClickListener(this);
         b = new FragmentB();
+//        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+//        if(sharedPref.contains("p_user") && !sharedPref.getString("p_user", "").equals("") && sharedPref.contains("p_pass") && !sharedPref.getString("p_pass", "").equals("")){
+//            transaction = getFragmentManager().beginTransaction();
+//            transaction.replace(R.id.container, b);
+//            transaction.commit();
+//        }
+
+
         return view;
     }
     public String getID(){
-        return id.getText().toString();
+        return id.getText().toString(); // save shared pref as p_user as String...
     }
 
     public String getPass(){
-        return pass.getText().toString();
+        return pass.getText().toString(); // save shared pref as p_pass as String
     }
 
 
@@ -53,11 +63,15 @@ public class FragmentA extends Fragment implements OnClickListener {
         switch (v.getId()) {
             case R.id.enter:
                 transaction.replace(R.id.container, b);
+                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("p_user", id.getText().toString() + "");
+                editor.putString("p_pass", pass.getText().toString() + "");
+                editor.commit();
+//                identificator = getID();
+//                password = getPass();
 
-                identificator = getID();
-                password = getPass();
-
-                Log.d(TAG, identificator+ ":" + password);
+//                Log.d(TAG, identificator+ ":" + password);
 
                 break;
         }

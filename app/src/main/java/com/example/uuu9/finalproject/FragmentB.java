@@ -24,7 +24,6 @@ public class FragmentB extends Fragment {
         list = new String[]{"A", "B", "C"};
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(view.getContext(),R.layout.listitem,list);
         lv.setAdapter(arrayAdapter);
-
         ((MainActivity)getActivity()).onClickStop(view);// this should be handled well enough...
         return view;
     }
