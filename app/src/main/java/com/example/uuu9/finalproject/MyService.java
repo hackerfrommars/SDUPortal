@@ -104,7 +104,7 @@ public class MyService extends Service {
             @Override
             public void onResponse(JSONObject response) {
                 SharedPreferences sharedPref = getSharedPreferences("sPref", MODE_PRIVATE);
-                if(sharedPref.contains("json")){
+                if(!sharedPref.contains("json")){
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putString("json", response.toString());
                     editor.commit();
@@ -132,26 +132,39 @@ public class MyService extends Service {
         requestQueue.add(jsObjRequest);
     }
     public void checkGrades(JSONObject newGr) throws JSONException {
+        boolean isEqual = true;
 //        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences sharedPref = getSharedPreferences("sPref", MODE_PRIVATE);
         Log.d("myLogs", "saved Json in str form" + sharedPref.getString("json", ""));
         JSONObject oldGr = new JSONObject(sharedPref.getString("json", ""));
         Log.d("myLogs", " old from grade" + oldGr.toString());
-    }
-    public void saveFile(JSONObject file) throws IOException {
-        FileOutputStream fos = context.openFileOutput("grades.json", Context.MODE_PRIVATE);
-        ObjectOutputStream os = new ObjectOutputStream(fos);
-        os.writeObject(file);
-        os.close();
-        fos.close();
-    }
 
-    public JSONObject loadFile() throws IOException, ClassNotFoundException {
-        FileInputStream fis = context.openFileInput("grades.json");
-        ObjectInputStream is = new ObjectInputStream(fis);
-        JSONObject oldJson = (JSONObject) is.readObject();
-        is.close();
-        fis.close();
-        return oldJson;
+        if(Integer.parseInt(oldGr.getString("len")) != Integer.parseInt(newGr.getString("len"))){
+            // notification :::> grades and lessons changed
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("json", newGr.toString());
+            editor.commit();
+        }
+        else{
+            for(int i = 1; i <= Integer.parseInt(oldGr.getString("len")); i++){
+                JSONObject old_course = oldGr.getJSONObject(i + "");
+                JSONObject new_course = newGr.getJSONObject(i + "");
+                String [] tags = new String[]{"course_name", "mt1", "mt2", "fin", "avg"};
+                for(int j = 0; j < 5; j++){
+                    if(!old_course.getString(tags[j]).equals(new_course.getString(tags[j]))){
+                        isEqual = false;
+                    }
+                }
+            }
+            if(isEqual == false){
+                // notification ----> smt changed
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("json", newGr.toString());
+                editor.commit();
+            }
+            else{
+                Log.d("myLogs", "nothing changed");
+            }
+        }
     }
 }
