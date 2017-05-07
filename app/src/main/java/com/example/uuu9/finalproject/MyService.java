@@ -1,5 +1,7 @@
 package com.example.uuu9.finalproject;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -46,6 +49,9 @@ public class MyService extends Service {
     String p_pass = "carsscarova114114";// get name or smt else...
     int timeMin = 1;
     Context context;
+
+    // testing counter
+    int counter = 0;
 
 
     public void onCreate() {
@@ -92,6 +98,7 @@ public class MyService extends Service {
 
     public void sendRequest(final String id, final String pass){
 //        final RequestQueue reqQueue = Volley.newRequestQueue(this);
+        final String testJson = "{\"1\": {\"lg\": \"IP\", \"code\": \"CSS 202\", \"course_name\": \"Microelectronics\", \"ects\": \"5\", \"mt2\": \"122\", \"mt1\": \"100\", \"l\": \"11\", \"n\": \"02\", \"p\": \"\", \"abs\": \"\", \"cr\": \"3\", \"avg\": \"\", \"fin\": \"\"}, \"2\": {\"lg\": \"IP\", \"code\": \"CSS 206\", \"course_name\": \"Database Management Systems 1\", \"ects\": \"5\", \"mt2\": \"80\", \"mt1\": \"60\", \"l\": \"07\", \"n\": \"02\", \"p\": \"\", \"abs\": \"\", \"cr\": \"3\", \"avg\": \"\", \"fin\": \"\"}, \"3\": {\"lg\": \"IP\", \"code\": \"CSS 208\", \"course_name\": \"Computer Organization and Architecture\", \"ects\": \"5\", \"mt2\": \"80\", \"mt1\": \"97\", \"l\": \"07\", \"n\": \"02\", \"p\": \"\", \"abs\": \"6\", \"cr\": \"3\", \"avg\": \"\", \"fin\": \"\"}, \"4\": {\"lg\": \"IP\", \"code\": \"CSS 216\", \"course_name\": \"Mobile Programming\", \"ects\": \"5\", \"mt2\": \"\", \"mt1\": \"30\", \"l\": \"03\", \"n\": \"01\", \"p\": \"\", \"abs\": \"\", \"cr\": \"3\", \"avg\": \"\", \"fin\": \"\"}, \"5\": {\"lg\": \"IP\", \"code\": \"HSS 109\", \"course_name\": \"Sociology\", \"ects\": \"3\", \"mt2\": \"85\", \"mt1\": \"59\", \"l\": \"\", \"n\": \"03\", \"p\": \"04\", \"abs\": \"\", \"cr\": \"2\", \"avg\": \"\", \"fin\": \"\"}, \"6\": {\"lg\": \"IP\", \"code\": \"HSS 132\", \"course_name\": \"Ecology and Sustainable Development\", \"ects\": \"3\", \"mt2\": \"100\", \"mt1\": \"100\", \"l\": \"\", \"n\": \"01\", \"p\": \"02\", \"abs\": \"0\", \"cr\": \"2\", \"avg\": \"\", \"fin\": \"\"}, \"7\": {\"lg\": \"IP\", \"code\": \"HSS 292\", \"course_name\": \"Physical Education 4\", \"ects\": \"4\", \"mt2\": \"90\", \"mt1\": \"92\", \"l\": \"\", \"n\": \"04\", \"p\": \"02\", \"abs\": \"\", \"cr\": \"4\", \"avg\": \"\", \"fin\": \"\"}, \"8\": {\"lg\": \"IP\", \"code\": \"INF 210\", \"course_name\": \"Professional English Language\", \"ects\": \"3\", \"mt2\": \"100\", \"mt1\": \"92\", \"l\": \"\", \"n\": \"01\", \"p\": \"06\", \"abs\": \"\", \"cr\": \"2\", \"avg\": \"\", \"fin\": \"\"}, \"len\": 8}";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         Map<String, String> mParams = new HashMap<>();
         mParams.put("p_user", id.toString());
@@ -112,11 +119,22 @@ public class MyService extends Service {
                 }
                 else{
                     try {
-                        checkGrades(response);
+                        // delete from here >>>
+                        if(counter % 2 == 0){
+                            checkGrades(new JSONObject(testJson));  // this is for testing purposes.... HFM
+                        }
+                        else{
+                            checkGrades(response);    // this is original
+                        }
+                        // <<<< to here this is just for testing ....
+
+//                        checkGrades(response);    // this is original
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Log.d("myLogs", "JSON exeption");
                     }
+                    counter += 1;
                 }
             }
         }, new Response.ErrorListener() {
@@ -126,7 +144,7 @@ public class MyService extends Service {
                 Log.d("myLogs", "error: " + error);
             }
         });
-        int socketTimeout = 20000;//30 seconds - change to what you want
+        int socketTimeout = 20000; // 20 sec
         RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         jsObjRequest.setRetryPolicy(policy);
         requestQueue.add(jsObjRequest);
@@ -141,6 +159,7 @@ public class MyService extends Service {
 
         if(Integer.parseInt(oldGr.getString("len")) != Integer.parseInt(newGr.getString("len"))){
             // notification :::> grades and lessons changed
+            notifyThis("Portal Grades", "Some of your courses changed");
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("json", newGr.toString());
             editor.commit();
@@ -158,13 +177,33 @@ public class MyService extends Service {
             }
             if(isEqual == false){
                 // notification ----> smt changed
+                notifyThis("Portal Grades", "There are change in your grades");
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("json", newGr.toString());
                 editor.commit();
+                Log.d("myLogs", "smt changed");
             }
             else{
                 Log.d("myLogs", "nothing changed");
             }
         }
+    }
+
+    public void notifyThis(String title, String message) {
+        Intent intent = new Intent(this.context, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this.context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder b = new NotificationCompat.Builder(this.context);
+        b.setAutoCancel(true)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(android.R.drawable.stat_notify_chat)
+                .setTicker("{your tiny message}")
+                .setContentTitle(title)
+                .setContentText(message)
+                .setContentIntent(contentIntent)
+                .setContentInfo("INFO");
+
+        NotificationManager nm = (NotificationManager) this.context.getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(1, b.build());
     }
 }
