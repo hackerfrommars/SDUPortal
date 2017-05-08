@@ -34,19 +34,14 @@ public class FragmentB extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view =  inflater.inflate(R.layout.fragment_b, container, false);
+<<<<<<< HEAD
 
         SharedPreferences sharedPref = getActivity().getSharedPreferences("sPref", MODE_PRIVATE);
         try{
             jsonParse = new JSONObject(sharedPref.getString("json", ""));
-        if(((MainActivity)getActivity()).isMyServiceRunning(MyService.class)){
-            Log.d("myLogs", "Service running ");
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        else{
-            Log.d("myLogs", "Service is not running ");
-            // MyService start should be here ... >>>
-            ((MainActivity)getActivity()).onClickStop(view);
-        }
-        // for testing >>> then should be changed to start and should be placed inside else{}
         try {
             len = jsonParse.getString("len");
             jsonInner = jsonParse.getJSONObject("1");
@@ -98,6 +93,21 @@ public class FragmentB extends Fragment {
         listView.setAdapter(adapter);
 
 
+=======
+        lv = (ListView)view.findViewById(R.id.listW);
+        list = new String[]{"A", "B", "C"};
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(view.getContext(),R.layout.listitem,list);
+        lv.setAdapter(arrayAdapter);
+        if(((MainActivity)getActivity()).isMyServiceRunning(MyService.class)){
+            Log.d("myLogs", "Service running ");
+        }
+        else{
+            Log.d("myLogs", "Service is not running ");
+            // MyService start should be here ... >>>
+            ((MainActivity)getActivity()).onClickStop(view);
+        }
+        // for testing >>> then should be changed to start and should be placed inside else{}
+>>>>>>> newbranch
         return view;
     }
 }
