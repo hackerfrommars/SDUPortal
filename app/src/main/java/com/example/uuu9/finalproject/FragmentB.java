@@ -36,8 +36,6 @@ public class FragmentB extends Fragment {
         view =  inflater.inflate(R.layout.fragment_b, container, false);
 
         SharedPreferences sharedPref = getActivity().getSharedPreferences("sPref", MODE_PRIVATE);
-        try{
-            jsonParse = new JSONObject(sharedPref.getString("json", ""));
         if(((MainActivity)getActivity()).isMyServiceRunning(MyService.class)){
             Log.d("myLogs", "Service running ");
         }
@@ -48,6 +46,7 @@ public class FragmentB extends Fragment {
         }
         // for testing >>> then should be changed to start and should be placed inside else{}
         try {
+            jsonParse = new JSONObject(sharedPref.getString("json", ""));
             len = jsonParse.getString("len");
             jsonInner = jsonParse.getJSONObject("1");
             name = jsonInner.getString("course_name");
