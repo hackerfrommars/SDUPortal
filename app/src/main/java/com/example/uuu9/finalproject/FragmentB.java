@@ -1,5 +1,6 @@
 package com.example.uuu9.finalproject;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -7,6 +8,9 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -24,12 +28,52 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class FragmentB extends Fragment {
     View view;
+    FragmentTransaction transaction;
     ListView lv;
     String[] list;
     JSONObject jsonParse,jsonInner;
     String len,name,mt1,mt2,fin,avg;
     final String LOG_TAG = "Dlogs";
     ArrayList<String> subjects;
+    FragmentA a;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // TODO Add your menu entries here
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.more_tab_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId())
+        {
+            case R.id.change_user:
+                SharedPreferences sharedPref = getActivity().getSharedPreferences("sPref", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("p_user", "");
+                editor.putString("p_pass", "");
+                editor.commit();
+                transaction = getFragmentManager().beginTransaction();
+                a = new FragmentA();
+                transaction.replace(R.id.container, a);
+                transaction.commit();
+
+                Log.d("MenuItem", "1");
+                break;
+            case R.id.about:
+                Log.d("MenuItem", "3");
+                break;
+        }
+        return true;
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
