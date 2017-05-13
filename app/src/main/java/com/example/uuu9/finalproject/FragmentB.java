@@ -21,6 +21,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +59,12 @@ public class FragmentB extends Fragment {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("p_user", "");
                 editor.putString("p_pass", "");
+                editor.putString("portal_json", "");
+                editor.putString("json", "");
                 editor.commit();
+                File imgFile = new  File(getActivity().getExternalFilesDir(null) + "/portal/profile.jpg");
+                boolean img_file = imgFile.delete();
+                Log.d("myLogs", "is profile image deleted: " + img_file);
                 transaction = getFragmentManager().beginTransaction();
                 a = new FragmentA();
                 transaction.replace(R.id.container, a);
@@ -80,14 +86,7 @@ public class FragmentB extends Fragment {
         view =  inflater.inflate(R.layout.fragment_b, container, false);
 
         SharedPreferences sharedPref = getActivity().getSharedPreferences("sPref", MODE_PRIVATE);
-        if(((MainActivity)getActivity()).isMyServiceRunning(MyService.class)){
-            Log.d("myLogs", "Service running ");
-        }
-        else{
-            Log.d("myLogs", "Service is not running ");
-            // MyService start should be here ... >>>
-            ((MainActivity)getActivity()).onClickStop(view);
-        }
+
         // for testing >>> then should be changed to start and should be placed inside else{}
         try {
             jsonParse = new JSONObject(sharedPref.getString("json", ""));

@@ -17,7 +17,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.view.View.OnClickListener;
 
-import static android.R.attr.fragment;
+//import static android.R.attr.fragment;
 
 
 public class FragmentA extends Fragment implements OnClickListener {
@@ -26,6 +26,7 @@ public class FragmentA extends Fragment implements OnClickListener {
     Button enter;
     EditText id,pass;
     FragmentB b;
+    FragmentC c;
     String identificator, password;
     private static final String TAG = "myLogsFragmentA";
     @Override
@@ -38,10 +39,11 @@ public class FragmentA extends Fragment implements OnClickListener {
         enter = (Button) view.findViewById(R.id.enter);
         enter.setOnClickListener(this);
         b = new FragmentB();
+        c = new FragmentC();
         SharedPreferences sharedPref = getActivity().getSharedPreferences("sPref", Context.MODE_PRIVATE);
         if(sharedPref.contains("p_user") && !sharedPref.getString("p_user", "").equals("") && sharedPref.contains("p_pass") && !sharedPref.getString("p_pass", "").equals("")){
             transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.container, b);
+            transaction.replace(R.id.container, c);
             transaction.commit();
         }
 
@@ -62,7 +64,7 @@ public class FragmentA extends Fragment implements OnClickListener {
         transaction = getFragmentManager().beginTransaction();
         switch (v.getId()) {
             case R.id.enter:
-                transaction.replace(R.id.container, b);
+                transaction.replace(R.id.container, c);
                 SharedPreferences sharedPref = getActivity().getSharedPreferences("sPref", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("p_user", id.getText().toString());

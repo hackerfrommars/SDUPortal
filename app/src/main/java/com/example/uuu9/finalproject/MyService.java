@@ -65,7 +65,7 @@ public class MyService extends Service {
         SharedPreferences sharedPref = getSharedPreferences("sPref", MODE_PRIVATE);
         p_user = sharedPref.getString("p_user", p_user);
         p_pass = sharedPref.getString("p_pass", p_pass);
-        Log.d("myLogs", p_user + " : " + p_pass);
+//        Log.d("myLogs", p_user + " : " + p_pass);
         someTask();
         return super.onStartCommand(intent, flags, startId);
     }
