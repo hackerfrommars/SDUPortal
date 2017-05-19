@@ -1,7 +1,10 @@
 package com.example.uuu9.finalproject;
 
 import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -63,39 +66,44 @@ public class FragmentC extends Fragment {
         }
 
         if(sharedPref.contains("profile_json") && !sharedPref.getString("profile_json", "").equals("")){
-            // img if exists
-            File imgFile = new  File(getActivity().getExternalFilesDir(null) + "/portal/profile.jpg");
-            if(imgFile.exists()){
-                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                iv.setImageBitmap(myBitmap);
-            }
-            else{
-                Log.d("myLogs", "file does not exist");
-            }
+            Log.d("myLogs", "have profile");
 
-            // do parsing ...
-
-
+            // TODO do parsing ...
 
         }
         else{
             // send request volley to profile...
             sendRequestToProfile(p_user, p_pass);
-            try {
-                String img_url = (new JSONObject(sharedPref.getString("profile_json", ""))).getString("img_url");
-                Log.d("myLogs", "url: " + img_url);
-                downloadFile(img_url);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
         }
 
+        File imgFile = new  File(getActivity().getExternalFilesDir(null) + "/portal/profile.jpg");
+        if(imgFile.exists()){
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            iv.setImageBitmap(myBitmap);
+            Log.d("myLogs", "file exist");
+        }
+        else{
+            Log.d("myLogs", "file does not exist");
+        }
 
-
+        getActivity().registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         return view;
     }
+
+    BroadcastReceiver onComplete=new BroadcastReceiver() {
+        public void onReceive(Context ctxt, Intent intent) {
+            File imgFile = new  File(getActivity().getExternalFilesDir(null) + "/portal/profile.jpg");
+            if(imgFile.exists()){
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                iv.setImageBitmap(myBitmap);
+                Log.d("myLogs", "file exist");
+            }
+            else{
+                Log.d("myLogs", "file does not exist");
+            }
+        }
+    };
 
     public void someTask() {
         new Thread(new Runnable() {
@@ -122,6 +130,26 @@ public class FragmentC extends Fragment {
                     editor.commit();
                     Log.d("myLogs", "profile_json saved");
                     Log.d("myLogs", "profile_json :   " + response.toString());
+
+                    String img_url = null;
+                    try {
+                        img_url = (new JSONObject(sharedPref.getString("profile_json", ""))).getString("img_url");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Log.d("myLogs", "url: " + img_url);
+                    downloadFile(img_url);
+
+                    File imgFile = new  File(getActivity().getExternalFilesDir(null) + "/portal/profile.jpg");
+                    if(imgFile.exists()){
+                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                        iv.setImageBitmap(myBitmap);
+                        Log.d("myLogs", "file exists");
+                    }
+                    else{
+                        Log.d("myLogs", "file does not exist");
+                    }
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -130,7 +158,7 @@ public class FragmentC extends Fragment {
                 Log.d("myLogs", "error: " + error);
             }
         });
-        int socketTimeout = 20000; // 20 sec
+        int socketTimeout = 30000; // 20 sec
         RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         jsObjRequest.setRetryPolicy(policy);
         requestQueue.add(jsObjRequest);
@@ -150,7 +178,7 @@ public class FragmentC extends Fragment {
         Uri downloadUri = Uri.parse(uRl);
         DownloadManager.Request request = new DownloadManager.Request(
                 downloadUri);
-
+        Log.d("myLogs", "downloading image");
         request.setAllowedNetworkTypes(
                 DownloadManager.Request.NETWORK_WIFI
                         | DownloadManager.Request.NETWORK_MOBILE)
@@ -158,6 +186,8 @@ public class FragmentC extends Fragment {
                 .setDescription("Downloading profile image from SDU portal")
                 .setDestinationInExternalFilesDir(getActivity(), "/portal", "profile.jpg");
         mgr.enqueue(request);
+
+
     }
 
 }
