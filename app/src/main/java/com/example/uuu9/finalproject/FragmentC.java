@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -46,7 +47,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class FragmentC extends Fragment {
-
+    FragmentA a;
     View view;
     String p_user;
     String p_pass;
@@ -57,6 +58,48 @@ public class FragmentC extends Fragment {
     JSONObject jo;
     FragmentB b;
     FragmentTransaction transaction;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // TODO Add your menu entries here
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.more_tab_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId())
+        {
+            case R.id.change_user:
+                SharedPreferences sharedPref = getActivity().getSharedPreferences("sPref", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("p_user", "");
+                editor.putString("p_pass", "");
+                editor.putString("profile_json", "");
+                editor.putString("json", "");
+                editor.commit();
+                File imgFile = new  File(getActivity().getExternalFilesDir(null) + "/portal/profile.jpg");
+                boolean img_file = imgFile.delete();
+                Log.d("myLogs", "is profile image deleted: " + img_file);
+                transaction = getFragmentManager().beginTransaction();
+                a = new FragmentA();
+                transaction.replace(R.id.container, a);
+                transaction.commit();
+
+                Log.d("MenuItem", "1");
+                break;
+            case R.id.about:
+                Log.d("MenuItem", "3");
+                break;
+        }
+        return true;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
