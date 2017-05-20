@@ -3,23 +3,28 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context="com.example.uuu9.finalproject.FragmentA">
+    tools:context="com.example.uuu9.finalproject.FragmentA"
+    android:gravity="center">
 
     <!-- TODO: Update blank fragment layout -->
     <EditText
         android:id="@+id/idiwka"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Enter ID"/>
+        android:hint="Enter ID"
+        android:layout_gravity="center_vertical|center_horizontal"/>
     <EditText
         android:id="@+id/pass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Password"/>
+        android:hint="Password"
+        android:layout_gravity="center_vertical|center_horizontal"
+        />
     <Button
         android:id="@+id/enter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ENTER"/>
+        android:text="ENTER"
+        android:layout_gravity="center_vertical|center_horizontal"/>
 
 </LinearLayout>

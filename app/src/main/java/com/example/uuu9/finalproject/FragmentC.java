@@ -1,6 +1,7 @@
 package com.example.uuu9.finalproject;
 
 import android.app.DownloadManager;
+import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +19,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -32,25 +37,34 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class FragmentC extends Fragment {
 
     View view;
     String p_user;
     String p_pass;
+    ListView lv;
+    ArrayList<String> list;
     String profileUrl = "http://192.168.43.209:8000/api/get_profile/";
     ImageView iv;
+    JSONObject jo;
+    FragmentB b;
+    FragmentTransaction transaction;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_c, container, false);
-
+        b = new FragmentB();
+        lv = (ListView)view.findViewById(R.id.listW);
         SharedPreferences sharedPref = getActivity().getSharedPreferences("sPref", MODE_PRIVATE);
         p_user = sharedPref.getString("p_user", p_user);
         p_pass = sharedPref.getString("p_pass", p_pass);
@@ -68,13 +82,49 @@ public class FragmentC extends Fragment {
         if(sharedPref.contains("profile_json") && !sharedPref.getString("profile_json", "").equals("")){
             Log.d("myLogs", "have profile");
 
-            // TODO do parsing ...
+            try {
+                jo = new JSONObject(sharedPref.getString("profile_json", ""));
+                list = new ArrayList<String>();
+                list.add("Student: " + jo.getString("full_name"));
+                list.add("status: " + jo.getString("status"));
+                list.add("major: " + jo.getString("major"));
+                list.add("grant type: " + jo.getString("grant_type"));
+                list.add("student number: " + jo.getString("stud_no"));
+                list.add("ent score: " + jo.getString("ent_score"));
+                list.add("birthday date: " + jo.getString("b_date"));
+                list.add("advisor: " + jo.getString("advisor"));
+                list.add("balance: " + jo.getString("balance"));
+                list.add("email: " + jo.getString("email"));
+                list.add("Grades List");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
         }
         else{
             // send request volley to profile...
             sendRequestToProfile(p_user, p_pass);
         }
+
+
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_list_item_1,list);
+        lv.setAdapter(arrayAdapter);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                if(id==10){
+                    transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.container, b);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+            }
+        });
+
 
         File imgFile = new  File(getActivity().getExternalFilesDir(null) + "/portal/profile.jpg");
         if(imgFile.exists()){
