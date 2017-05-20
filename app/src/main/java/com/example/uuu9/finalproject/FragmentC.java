@@ -86,6 +86,7 @@ public class FragmentC extends Fragment {
                 editor.commit();
                 File imgFile = new  File(getActivity().getExternalFilesDir(null) + "/portal/profile.jpg");
                 boolean img_file = imgFile.delete();
+                ((MainActivity)getActivity()).onClickStop(view);
                 Log.d("myLogs", "is profile image deleted: " + img_file);
                 transaction = getFragmentManager().beginTransaction();
                 a = new FragmentA();
@@ -150,7 +151,7 @@ public class FragmentC extends Fragment {
             else{
                 Log.d("myLogs", "Service is not running ");
                 // MyService start should be here ... >>>
-                ((MainActivity)getActivity()).onClickStop(view);
+                ((MainActivity)getActivity()).onClickStart(view);
                 // TODO change to start at the end...
             }
 
@@ -259,7 +260,7 @@ public class FragmentC extends Fragment {
                     else{
                         Log.d("myLogs", "Service is not running ");
                         // MyService start should be here ... >>>
-                        ((MainActivity)getActivity()).onClickStop(view);
+                        ((MainActivity)getActivity()).onClickStart(view);
                         // TODO change to start at the end...
                     }
 

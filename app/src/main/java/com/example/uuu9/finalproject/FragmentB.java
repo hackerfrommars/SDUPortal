@@ -59,11 +59,12 @@ public class FragmentB extends Fragment {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("p_user", "");
                 editor.putString("p_pass", "");
-                editor.putString("portal_json", "");
+                editor.putString("profile_json", "");
                 editor.putString("json", "");
                 editor.commit();
                 File imgFile = new  File(getActivity().getExternalFilesDir(null) + "/portal/profile.jpg");
                 boolean img_file = imgFile.delete();
+                ((MainActivity)getActivity()).onClickStop(view);
                 Log.d("myLogs", "is profile image deleted: " + img_file);
                 transaction = getFragmentManager().beginTransaction();
                 a = new FragmentA();
