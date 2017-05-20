@@ -59,7 +59,7 @@ public class FragmentB extends Fragment {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("p_user", "");
                 editor.putString("p_pass", "");
-                editor.putString("portal_json", "");
+                editor.putString("profile_json", "");
                 editor.putString("json", "");
                 editor.commit();
                 File imgFile = new  File(getActivity().getExternalFilesDir(null) + "/portal/profile.jpg");
