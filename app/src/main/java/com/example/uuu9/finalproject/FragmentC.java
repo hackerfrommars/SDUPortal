@@ -70,14 +70,14 @@ public class FragmentC extends Fragment {
         p_pass = sharedPref.getString("p_pass", p_pass);
         Log.d("myLogs", p_user + " : " + p_pass);
         iv = (ImageView)view.findViewById(R.id.imageView);
-        if(((MainActivity)getActivity()).isMyServiceRunning(MyService.class)){
-            Log.d("myLogs", "Service running ");
-        }
-        else{
-            Log.d("myLogs", "Service is not running ");
-            // MyService start should be here ... >>>
-            ((MainActivity)getActivity()).onClickStop(view);
-        }
+//        if(((MainActivity)getActivity()).isMyServiceRunning(MyService.class)){
+//            Log.d("myLogs", "Service running ");
+//        }
+//        else{
+//            Log.d("myLogs", "Service is not running ");
+//            // MyService start should be here ... >>>
+//            ((MainActivity)getActivity()).onClickStop(view);
+//        }
 
         if(sharedPref.contains("profile_json") && !sharedPref.getString("profile_json", "").equals("")){
             Log.d("myLogs", "have profile");
@@ -99,6 +99,16 @@ public class FragmentC extends Fragment {
 
             } catch (JSONException e) {
                 e.printStackTrace();
+            }
+
+            if(((MainActivity)getActivity()).isMyServiceRunning(MyService.class)){
+                Log.d("myLogs", "Service running ");
+            }
+            else{
+                Log.d("myLogs", "Service is not running ");
+                // MyService start should be here ... >>>
+                ((MainActivity)getActivity()).onClickStop(view);
+                // TODO change to start at the end...
             }
 
         }
@@ -198,6 +208,16 @@ public class FragmentC extends Fragment {
                     }
                     else{
                         Log.d("myLogs", "file does not exist");
+                    }
+
+                    if(((MainActivity)getActivity()).isMyServiceRunning(MyService.class)){
+                        Log.d("myLogs", "Service running ");
+                    }
+                    else{
+                        Log.d("myLogs", "Service is not running ");
+                        // MyService start should be here ... >>>
+                        ((MainActivity)getActivity()).onClickStop(view);
+                        // TODO change to start at the end...
                     }
 
             }

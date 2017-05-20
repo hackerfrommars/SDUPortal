@@ -120,15 +120,15 @@ public class MyService extends Service {
                 else{
                     try {
                         // delete from here >>>
-                        if(counter % 2 == 0){
-                            checkGrades(new JSONObject(testJson));  // this is for testing purposes.... HFM
-                        }
-                        else{
-                            checkGrades(response);    // this is original
-                        }
+//                        if(counter % 2 == 0){
+//                            checkGrades(new JSONObject(testJson));  // this is for testing purposes.... HFM
+//                        }
+//                        else{
+//                            checkGrades(response);    // this is original
+//                        }
                         // <<<< to here this is just for testing ....
 
-//                        checkGrades(response);    // this is original
+                        checkGrades(response);    // this is original
 
                     } catch (JSONException e) {
                         e.printStackTrace();
